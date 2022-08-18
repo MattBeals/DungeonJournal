@@ -2,7 +2,6 @@ DungeonJournal = {}
 
 -- TO DO:
 -- Fix Checkboxes in the LAM  - Not important yet
--- Figure out why it in game backs up when accessing tab
 -- Fix tab to have data
 -- Install some debugging stuff, since manually looking is crap
 -- Figure out XML and don't just steal 
@@ -31,23 +30,39 @@ function DungeonJournal.CreateConfigMenu()
     local ConfigPanel = LAM:RegisterAddonPanel(panelData.name.."Config", panelData)
 
     local ConfigData = {
-        {   type = "checkbox",
-            name = "A Checkbox",
-            getFunc = function() return saveData.myValue end,
-            setFunc = function(value) saveData.myValue = value end,
+        { 
+            type = "header",
+            name = "Arby's",
         },
+        {
+            type = "description",
+            text = "~~~ We have the Meats~~~",
+        },
+        {
+			type = "checkbox",
+			name = "TODO Checkbox",
+			tooltip = "TODO Tooltip",
+			getFunc = function() return JournalQuestLog.vars.showMissed end,
+			setFunc = function(newValue) JournalQuestLog.vars.showMissed = newValue end,
+			requiresReload = true,
+		},
     }
     LAM:RegisterOptionControls(panelData.name.."Config", ConfigData)	
 end
 
 
 
-function DungeonJournal.initialize()
-    --init LAM Settings code
-    DungeonJournal.CreateConfigMenu()
-
+function DungeonJournal.Initialize()
+      
+    
+    
     -- From Votan on the Forum responding to Enodoc --
     DungeonJournal.control=GetControl
+    control=DungeonJournal.control
+
+    local function InitializeRow(control, data)
+		control:SetText(data.questName)--(zo_strformat(GetString(SI_JOURNAL_QUEST_LOG_ROW_ENTRY), data.questName))
+	end
 
     local sceneName = "DungeonJournal"
     DUNGEON_JOURNAL_FRAGMENT = ZO_HUDFadeSceneFragment:New(DUNGEON_JOURNAL_Window)
@@ -63,7 +78,10 @@ function DungeonJournal.initialize()
     DUNGEON_JOURNAL_SCENE:AddFragment(TREE_UNDERLAY_FRAGMENT)
     DUNGEON_JOURNAL_SCENE:AddFragment(CODEX_WINDOW_SOUNDS)
     DUNGEON_JOURNAL_SCENE:AddFragment(DUNGEON_JOURNAL_FRAGMENT)
-    
+    -- Messing with Sidebar here
+    --DUNGEON_JOURNAL_SCENE:AddFragment(GAMEPAD_NAV_QUADRANT_1_BACKGROUND_FRAGMENT)
+    --DUNGEON_JOURNAL_SCENE:AddFragment(GAMEPAD_NAV_QUADRANT_2_3_BACKGROUND_FRAGMENT)
+
     SYSTEMS:RegisterKeyboardRootScene(sceneName, DUNGEON_JOURNAL_SCENE)
     
     local sceneGroupInfo = MAIN_MENU_KEYBOARD.sceneGroupInfo["journalSceneGroup"]
@@ -89,6 +107,8 @@ function DungeonJournal.initialize()
 		highlight = "/esoui/art/lfg/lfg_indexicon_dungeon_over.dds",
     }
 
+    -- Sub Category testing --------------
+    -- DungeonJournal.InitializeCategoryList(control)
     local sceneGroupBarFragment = sceneGroupInfo.sceneGroupBarFragment
     DUNGEON_JOURNAL_SCENE:AddFragment(sceneGroupBarFragment)
     
@@ -104,6 +124,56 @@ function DungeonJournal.initialize()
         end
     end )
 
+    --Calling INIT
+    DungeonJournal.InitializeCategoryList(control)
+
 end
 
-DungeonJournal.initialize()
+
+
+function DungeonJournal.InitializeCategoryList(control)
+
+--    DungeonJournal.navigationTree = ZO_Tree:New(control:GetNamedChild("NavigationContainerScrollChild"), 40, -10, 385)
+
+--    local function TreeHeaderSetup(node, control, completionState, open)
+--        control:SetModifyTextType(MODIFY_TEXT_TYPE_UPPERCASE)
+--        control:SetText(GetString("SI_DUNGEON_JOURNAL_NAVIGATION1", completionState))
+        
+--      ZO_LabelHeader_Setup(control, open)
+--   end
+
+--    local function TreeHeaderEquality(left, right)
+--        return left.completionState == right.completionState
+--    end
+--	
+--   DungeonJournal.navigationTree:AddTemplate("ZO_LabelHeader", TreeHeaderSetup, nil, TreeHeaderEquality, nil, 0)
+--
+--    local function TreeEntrySetup(node, control, data, open)
+--        control:SetText(zo_strformat("<<1>>", data.name))
+--        local counter = control:GetNamedChild("CounterText")
+--		counter:SetText(zo_strformat("<<2>>/<<1>>", #data.quests-data.missed, data.completed))
+--		GetControl(control, "CompletedIcon"):SetHidden(not data.allCompleted)
+--        control:SetSelected(false)
+--    end
+--    local function TreeEntryOnSelected(control, data, selected, reselectingDuringRebuild)
+--     control:SetSelected(selected)
+--       if selected and not reselectingDuringRebuild then
+--            DungeonJournal.RefreshCategory()
+--        end
+--    end
+--    local function TreeEntryEquality(left, right)
+--        return left.name == right.name
+--    end
+--    DungeonJournal.navigationTree:AddTemplate("JQL_NavigationEntry", TreeEntrySetup, TreeEntryOnSelected, TreeEntryEquality)
+--
+--    DungeonJournal.navigationTree:SetExclusive(true)
+--    DungeonJournal.navigationTree:SetOpenAnimation("ZO_TreeOpenAnimation")
+    
+    -- Print vvv
+    d("DJ Navigation Initialized")
+    
+end
+
+DungeonJournal.Initialize()
+--init LAM Settings code
+DungeonJournal.CreateConfigMenu()  

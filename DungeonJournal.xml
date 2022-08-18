@@ -1,5 +1,21 @@
 <GuiXml>
     <Controls>
+        <Label name="DJ_NavigationEntry" virtual="true" font="ZoFontHeader" inherits="ZO_SelectableLabel">
+                <OnMouseUp>
+                    ZO_TreeEntry_OnMouseUp(self, upInside)
+                </OnMouseUp>
+                <Controls>
+                    <Label name="$(parent)CounterText" horizontalAlignment="RIGHT" font="ZoFontHeader">
+                        <Anchor point="LEFT" offsetX="200" offsetY="0" />
+                        <Dimensions x="60" y="0" />
+                    </Label>
+                        <Texture name="$(parent)CompletedIcon" level="3" textureFile="EsoUI/Art/Cadwell/check.dds" hidden="true">
+                        <Dimensions x="16" y="16"/>
+                        <Anchor point="RIGHT" relativePoint="LEFT" offsetX="-8"/>
+                    </Texture>
+                </Controls>
+            </Label>
+            
 	    <TopLevelControl name="DUNGEON_JOURNAL_Window" inherits="ZO_RightPanelFootPrint" hidden="true">
             <Controls>
 				
